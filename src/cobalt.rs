@@ -148,6 +148,8 @@ pub fn build(config: &Config) -> Result<()> {
             }
         }
 
+        post.attributes.insert("now".to_owned(), Value::Str(UTC::now().timestamp().to_string()) );
+
         let mut context = post.get_render_context(&simple_posts_data);
 
         try!(post.render_excerpt(&mut context, source, &config.excerpt_separator));
