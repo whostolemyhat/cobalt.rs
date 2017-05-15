@@ -148,8 +148,6 @@ pub fn build(config: &Config) -> Result<()> {
             }
         }
 
-        post.attributes.insert("now".to_owned(), Value::Str(UTC::now().timestamp().to_string()) );
-
         let mut context = post.get_render_context(&simple_posts_data);
 
         try!(post.render_excerpt(&mut context, source, &config.excerpt_separator));
@@ -171,6 +169,10 @@ pub fn build(config: &Config) -> Result<()> {
     trace!("Generating other documents");
     for mut doc in documents {
         trace!("Generating {}", doc.path);
+
+        // add timestamp to docs for cachebusting
+        // equiv of jekyll site.time https://jekyllrb.com/docs/variables/
+        doc.attributes.insert("time".to_owned(), Value::Str(UTC::now().timestamp().to_string()) );
 
         let mut context = doc.get_render_context(&posts_data);
         let doc_html = try!(doc.render(&mut context, source, &layouts, &mut layouts_cache));
